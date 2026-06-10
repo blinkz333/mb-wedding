@@ -1,27 +1,27 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-// ─── Wedding Configuration ──────────────────────────────────
+// â”€â”€â”€ Wedding Configuration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const WEDDING_DATE = new Date("2026-11-14T13:29:00");
-const BRIDE_TH = "นางสาวณัฐภัสสร";
-const GROOM_TH = "นายสุทธิพงษ์";
+const BRIDE_TH = "à¸™à¸²à¸‡à¸ªà¸²à¸§à¸“à¸±à¸à¸ à¸±à¸ªà¸ªà¸£";
+const GROOM_TH = "à¸™à¸²à¸¢à¸ªà¸¸à¸—à¸˜à¸´à¸žà¸‡à¸©à¹Œ";
 const BRIDE_EN = "Natphatson";
 const GROOM_EN = "Sutthipong";
 const VENUE_NAME = "NT Grand Ballroom";
-const VENUE_ADDRESS = "99 ถ.แจ้งวัฒนะ ทุ่งสองห้อง หลักสี่ กรุงเทพมหานคร 10210";
+const VENUE_ADDRESS = "99 à¸–.à¹à¸ˆà¹‰à¸‡à¸§à¸±à¸’à¸™à¸° à¸—à¸¸à¹ˆà¸‡à¸ªà¸­à¸‡à¸«à¹‰à¸­à¸‡ à¸«à¸¥à¸±à¸à¸ªà¸µà¹ˆ à¸à¸£à¸¸à¸‡à¹€à¸—à¸žà¸¡à¸«à¸²à¸™à¸„à¸£ 10210";
 const MAPS_DIRECTION = "https://maps.app.goo.gl/TH6jPpHhj3kuEHXW6";
 const MAPS_EMBED =
   "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.5039!2d100.5658761!3d13.8821799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e283203f6584e9%3A0x739ac935a9dba39c!2sNT%20Grand%20Ballroom!5e0!3m2!1sth!2sth!4v1749553040000!5m2!1sth!2sth";
 const HASHTAG = "#BMWeddingday";
 const DRESS_CODE = ["#7A1228", "#C4907A", "#8B7355"];
 const SCHEDULE = [
-  { time: "13.29 น.", event: "พิธีแห่ขันหมาก" },
-  { time: "14.09 น.", event: "พิธีหมั้น" },
-  { time: "18.09 น.", event: "ฉลองมงคลสมรส\n(โต๊ะจีน)" },
-  { time: "21.00 น.", event: "After Party" },
+  { time: "13.29 à¸™.", event: "à¸žà¸´à¸˜à¸µà¹à¸«à¹ˆà¸‚à¸±à¸™à¸«à¸¡à¸²à¸" },
+  { time: "14.09 à¸™.", event: "à¸žà¸´à¸˜à¸µà¸«à¸¡à¸±à¹‰à¸™" },
+  { time: "18.09 à¸™.", event: "à¸‰à¸¥à¸­à¸‡à¸¡à¸‡à¸„à¸¥à¸ªà¸¡à¸£à¸ª\n(à¹‚à¸•à¹Šà¸°à¸ˆà¸µà¸™)" },
+  { time: "21.00 à¸™.", event: "After Party" },
 ];
 
-// ─── Countdown Hook ─────────────────────────────────────────
+// â”€â”€â”€ Countdown Hook â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function useCountdown(target) {
   const calc = () => {
     const diff = Math.max(0, target - Date.now());
@@ -42,7 +42,7 @@ function useCountdown(target) {
   return t;
 }
 
-// ─── ICS Calendar Download ──────────────────────────────────
+// â”€â”€â”€ ICS Calendar Download â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function downloadICS() {
   const ics = [
     "BEGIN:VCALENDAR",
@@ -53,7 +53,7 @@ function downloadICS() {
     "BEGIN:VEVENT",
     "DTSTART;TZID=Asia/Bangkok:20261114T132900",
     "DTEND;TZID=Asia/Bangkok:20261114T210000",
-    `SUMMARY:งานแต่งงาน ${BRIDE_EN} & ${GROOM_EN}`,
+    `SUMMARY:à¸‡à¸²à¸™à¹à¸•à¹ˆà¸‡à¸‡à¸²à¸™ ${BRIDE_EN} & ${GROOM_EN}`,
     `LOCATION:${VENUE_NAME}\\, ${VENUE_ADDRESS}`,
     `DESCRIPTION:We are delighted to invite you to the wedding of ${BRIDE_EN} & ${GROOM_EN}`,
     "END:VEVENT",
@@ -71,7 +71,7 @@ function downloadICS() {
   URL.revokeObjectURL(url);
 }
 
-// ─── SVG: Compass Rose ──────────────────────────────────────
+// â”€â”€â”€ SVG: Compass Rose â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CompassRose() {
   return (
     <svg
@@ -190,7 +190,7 @@ function CompassRose() {
   );
 }
 
-// ─── SVG: NS Monogram ────────────────────────────────────────
+// â”€â”€â”€ SVG: NS Monogram â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function NSMonogram({ size = 70, primaryColor = "#C9A470", className = "" }) {
   return (
     <svg
@@ -213,7 +213,7 @@ function NSMonogram({ size = 70, primaryColor = "#C9A470", className = "" }) {
       >
         N
       </text>
-      {/* S – overlapping right side */}
+      {/* S â€“ overlapping right side */}
       <text
         x="38"
         y="88"
@@ -230,7 +230,7 @@ function NSMonogram({ size = 70, primaryColor = "#C9A470", className = "" }) {
   );
 }
 
-// ─── SVG: Thailand Stamp ─────────────────────────────────────
+// â”€â”€â”€ SVG: Thailand Stamp â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function ThailandStamp() {
   return (
     <svg
@@ -257,9 +257,9 @@ function ThailandStamp() {
         strokeWidth="1.2"
       />
       <defs>
-        {/* counterclockwise = top half of circle, text reads left→right along the top */}
+        {/* counterclockwise = top half of circle, text reads leftâ†’right along the top */}
         <path id="topCircle" d="M 15,80 A 65,65 0 0,0 145,80" />
-        {/* clockwise = bottom half of circle, text reads left→right along the bottom */}
+        {/* clockwise = bottom half of circle, text reads leftâ†’right along the bottom */}
         <path id="botCircle" d="M 15,80 A 65,65 0 0,1 145,80" />
       </defs>
       <text
@@ -270,7 +270,7 @@ function ThailandStamp() {
         letterSpacing="3"
       >
         <textPath href="#topCircle" startOffset="12%">
-          THAILAND — TH
+          THAILAND â€” TH
         </textPath>
       </text>
       <text
@@ -286,13 +286,13 @@ function ThailandStamp() {
       </text>
       {/* Airplane */}
       <text x="80" y="90" textAnchor="middle" fontSize="32" fill="#7A1228">
-        ✈
+        âœˆ
       </text>
     </svg>
   );
 }
 
-// ─── SVG: Airmail Stamp ──────────────────────────────────────
+// â”€â”€â”€ SVG: Airmail Stamp â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function AirmailStamp() {
   return (
     <svg
@@ -364,7 +364,7 @@ function AirmailStamp() {
   );
 }
 
-// ─── SVG: Arrive Visit Pass (triangle) ──────────────────────
+// â”€â”€â”€ SVG: Arrive Visit Pass (triangle) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function ArriveStamp() {
   return (
     <svg
@@ -387,7 +387,7 @@ function ArriveStamp() {
         strokeWidth="1"
       />
       <text x="90" y="90" textAnchor="middle" fontSize="22" fill="#A09488">
-        ✈
+        âœˆ
       </text>
       <text
         x="90"
@@ -416,7 +416,7 @@ function ArriveStamp() {
   );
 }
 
-// ─── SVG: HK Stamp ───────────────────────────────────────────
+// â”€â”€â”€ SVG: HK Stamp â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function HKStamp() {
   return (
     <svg
@@ -508,10 +508,10 @@ function HKStamp() {
   );
 }
 
-// ─── SVG: Schedule Icons ─────────────────────────────────────
+// â”€â”€â”€ SVG: Schedule Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function ScheduleIcon({ index }) {
   const drawings = [
-    // พิธีแห่ขันหมาก – fan/tray
+    // à¸žà¸´à¸˜à¸µà¹à¸«à¹ˆà¸‚à¸±à¸™à¸«à¸¡à¸²à¸ â€“ fan/tray
     <g key="0">
       <path
         d="M50,30 L30,65 M50,30 L40,68 M50,30 L50,70 M50,30 L60,68 M50,30 L70,65"
@@ -538,7 +538,7 @@ function ScheduleIcon({ index }) {
         strokeWidth="1.5"
       />
     </g>,
-    // พิธีหมั้น – rings
+    // à¸žà¸´à¸˜à¸µà¸«à¸¡à¸±à¹‰à¸™ â€“ rings
     <g key="1">
       <circle
         cx="40"
@@ -557,7 +557,7 @@ function ScheduleIcon({ index }) {
         strokeWidth="2.5"
       />
     </g>,
-    // โต๊ะจีน – chopsticks/bowl
+    // à¹‚à¸•à¹Šà¸°à¸ˆà¸µà¸™ â€“ chopsticks/bowl
     <g key="2">
       <ellipse
         cx="50"
@@ -602,7 +602,7 @@ function ScheduleIcon({ index }) {
         strokeLinecap="round"
       />
     </g>,
-    // After Party – clinking glasses
+    // After Party â€“ clinking glasses
     <g key="3">
       <path
         d="M38,30 L32,58 L44,58 Z"
@@ -680,7 +680,7 @@ function ScheduleIcon({ index }) {
   );
 }
 
-// ─── Mobile Nav Icons ────────────────────────────────────────
+// â”€â”€â”€ Mobile Nav Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const IconHome = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
@@ -702,7 +702,7 @@ const IconPin = () => (
   </svg>
 );
 
-// ─── Main App ────────────────────────────────────────────────
+// â”€â”€â”€ Main App â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function App() {
   const time = useCountdown(WEDDING_DATE);
   const [activeSection, setActiveSection] = useState("hero");
@@ -761,7 +761,7 @@ export default function App() {
 
   return (
     <div className="wc">
-      {/* ══════════ HEADER – Boarding Pass ══════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â• HEADER â€“ Boarding Pass â•â•â•â•â•â•â•â•â•â• */}
       <header className="bp-header">
         <div className="bp-left">
           <div className="bp-field">
@@ -780,7 +780,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* ══════════ HERO – World Map + Names ══════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â• HERO â€“ World Map + Names â•â•â•â•â•â•â•â•â•â• */}
       <section id="hero" className="hero">
         {/* World map watermark */}
         <img
@@ -817,13 +817,13 @@ export default function App() {
         </div>
       </section>
 
-      {/* ══════════ BOARDING TEXT ══════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â• BOARDING TEXT â•â•â•â•â•â•â•â•â•â• */}
       <div className="bp-text-bar">
         <h2 className="bp-main-title">FIRST CLASS, BOARDING PASS</h2>
         <p className="bp-sub-title">WELCOME TO THE WEDDING OF</p>
       </div>
 
-      {/* ══════════ INVITATION ══════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â• INVITATION â•â•â•â•â•â•â•â•â•â• */}
       <section id="invitation" className="invitation">
         <p className="honour-line reveal">
           THE HONOUR OF YOUR PRESENCE IS REQUESTED
@@ -899,7 +899,7 @@ export default function App() {
         </button>
       </section>
 
-      {/* ══════════ SCHEDULE ══════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â• SCHEDULE â•â•â•â•â•â•â•â•â•â• */}
       <section id="schedule" className="schedule">
         <h2 className="sec-title reveal">SCHEDULE</h2>
 
@@ -917,7 +917,7 @@ export default function App() {
 
         {/* Flight path line */}
         <div className="flight-row">
-          <span className="flight-plane">✈</span>
+          <span className="flight-plane">âœˆ</span>
           <div className="flight-line" />
           <span className="flight-pin">
             <IconPin />
@@ -946,7 +946,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ══════════ LOCATION ══════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â• LOCATION â•â•â•â•â•â•â•â•â•â• */}
       <section id="location" className="location">
         <div className="venue-header reveal">
           <IconPin />
@@ -980,16 +980,16 @@ export default function App() {
         </div>
       </section>
 
-      {/* ══════════ FOOTER ══════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â• FOOTER â•â•â•â•â•â•â•â•â•â• */}
       <footer className="wc-footer">
-        <p className="footer-tag">made with ❤︎ for</p>
+        <p className="footer-tag">made with â¤ï¸Ž for</p>
         <p className="footer-names">
           {BRIDE_EN} &amp; {GROOM_EN}
         </p>
       </footer>
 
-      {/* ══════════ MOBILE BOTTOM NAV ══════════ */}
-      <nav className="bottom-nav" aria-label="เมนูหลัก">
+      {/* â•â•â•â•â•â•â•â•â•â• MOBILE BOTTOM NAV â•â•â•â•â•â•â•â•â•â• */}
+      <nav className="bottom-nav" aria-label="à¹€à¸¡à¸™à¸¹à¸«à¸¥à¸±à¸">
         {[
           { id: "hero", Icon: IconHome, label: "Home" },
           { id: "schedule", Icon: IconCalendar, label: "Program" },

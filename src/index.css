@@ -1,4 +1,4 @@
-/* Global reset – everything else handled in App.css */
+/* Global reset â€“ everything else handled in App.css */
 *, *::before, *::after { box-sizing: border-box; }
 html, body, #root { margin: 0; padding: 0; min-height: 100%; }
 body { -webkit-font-smoothing: antialiased; }
