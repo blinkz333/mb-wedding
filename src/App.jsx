@@ -3,10 +3,10 @@ import "./App.css";
 
 // ─── Wedding Configuration ──────────────────────────────────
 const WEDDING_DATE = new Date("2026-11-14T13:29:00");
-const BRIDE_TH = "นางสาวณัฐภัสสร";
-const GROOM_TH = "นายสุทธิพงษ์";
-const BRIDE_EN = "Natphatson";
-const GROOM_EN = "Sutthipong";
+const BRIDE_TH = "นางสาว ณัฐภัสสร เอี่ยมละออ";
+const GROOM_TH = "นาย สุทธิพงษ์ ตั้งประเสริฐพาณิช";
+const BRIDE_EN = "Natphatson Eiamlaor";
+const GROOM_EN = "Sutthipong Tangprasertpanich";
 const VENUE_NAME = "NT Grand Ballroom";
 const VENUE_ADDRESS = "99 ถ.แจ้งวัฒนะ ทุ่งสองห้อง หลักสี่ กรุงเทพมหานคร 10210";
 const MAPS_DIRECTION = "https://maps.app.goo.gl/TH6jPpHhj3kuEHXW6";
