@@ -1,10 +1,25 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import coupleImg from "./assets/imgs/couple-circle.webp";
+import scheduleImg from "./assets/imgs/schedule.jpg";
+
+// Auto-import every image dropped into src/assets/gallery/
+const galleryModules = import.meta.glob(
+  "./assets/gallery/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}",
+  { eager: true, import: "default" },
+);
+const GALLERY_IMAGES = Object.keys(galleryModules)
+  .sort()
+  .map((k) => galleryModules[k]);
+// Fallback so the section still looks alive before photos are added
+const GALLERY = GALLERY_IMAGES.length
+  ? GALLERY_IMAGES
+  : [coupleImg, scheduleImg, coupleImg, scheduleImg];
 
 // ─── Wedding Configuration ──────────────────────────────────
 const WEDDING_DATE = new Date("2026-11-14T13:29:00");
 const BRIDE_TH = "นางสาว ณัฐภัสสร เอี่ยมละออ";
-const GROOM_TH = "นาย สุทธิพงษ์ ตั้งประเสริฐพาณิช";
+const GROOM_TH = "นาย สุทธิพงษ์ ตั้งประเสริฐพานิช";
 const BRIDE_EN = "Natphatson";
 const GROOM_EN = "Sutthipong";
 const VENUE_NAME = "NT Grand Ballroom";
@@ -701,6 +716,11 @@ const IconPin = () => (
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
   </svg>
 );
+const IconCamera = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+    <path d="M9 3 7.17 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.17L15 3zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+  </svg>
+);
 
 // ─── Main App ────────────────────────────────────────────────
 export default function App() {
@@ -708,10 +728,23 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("hero");
   const [prevTime, setPrevTime] = useState(time);
   const [flipped, setFlipped] = useState({});
+  const [lightbox, setLightbox] = useState(null);
+
+  // Close lightbox on Escape
+  useEffect(() => {
+    if (lightbox === null) return;
+    const onKey = (e) => e.key === "Escape" && setLightbox(null);
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightbox]);
 
   // Active-section tracker
   useEffect(() => {
-    const ids = ["hero", "invitation", "schedule", "location"];
+    const ids = ["hero", "invitation", "schedule", "gallery", "location"];
     const observers = ids.map((id) => {
       const el = document.getElementById(id);
       if (!el) return null;
@@ -832,7 +865,15 @@ export default function App() {
           AT THE MARRIAGE CELEBRATION OF
         </p>
 
-        <div className="couple-row reveal" style={{ transitionDelay: "0.2s" }}>
+        <div className="couple-photo reveal" style={{ transitionDelay: "0.2s" }}>
+          <img
+            src={coupleImg}
+            alt={`${BRIDE_TH} & ${GROOM_TH}`}
+            loading="lazy"
+          />
+        </div>
+
+        <div className="couple-row reveal" style={{ transitionDelay: "0.3s" }}>
           <div className="person-card">
             <span className="role-script">Bride</span>
             <span className="person-th">{BRIDE_TH}</span>
@@ -903,6 +944,10 @@ export default function App() {
       <section id="schedule" className="schedule">
         <h2 className="sec-title reveal">SCHEDULE</h2>
 
+        <div className="schedule-photo reveal">
+          <img src={scheduleImg} alt="Save the date" loading="lazy" />
+        </div>
+
         <div className="timeline">
           {SCHEDULE.map((item, i) => (
             <div key={i} className="tl-item tl-above">
@@ -945,6 +990,55 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {/* ══════════ GALLERY ══════════ */}
+      <section id="gallery" className="gallery">
+        <h2 className="sec-title reveal">GALLERY</h2>
+        <p className="gallery-sub reveal">Pre-Wedding</p>
+
+        <div className="gallery-marquee reveal">
+          {[
+            GALLERY.filter((_, i) => i % 2 === 0),
+            GALLERY.filter((_, i) => i % 2 === 1),
+          ].map((row, r) => (
+            <div
+              key={r}
+              className={`gm-row ${r === 0 ? "gm-row--ltr" : "gm-row--rtl"}`}
+            >
+              {[...row, ...row].map((src, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className="gm-item"
+                  onClick={() => setLightbox(src)}
+                  aria-label="ดูรูปขนาดเต็ม"
+                >
+                  <img src={src} alt="" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {lightbox && (
+        <div
+          className="gm-lightbox"
+          onClick={() => setLightbox(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            type="button"
+            className="gm-lightbox-close"
+            aria-label="ปิด"
+            onClick={() => setLightbox(null)}
+          >
+            ×
+          </button>
+          <img src={lightbox} alt="" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
 
       {/* ══════════ LOCATION ══════════ */}
       <section id="location" className="location">
@@ -993,6 +1087,7 @@ export default function App() {
         {[
           { id: "hero", Icon: IconHome, label: "Home" },
           { id: "schedule", Icon: IconCalendar, label: "Program" },
+          { id: "gallery", Icon: IconCamera, label: "Gallery" },
           { id: "location", Icon: IconLocation, label: "Location" },
         ].map(({ id, Icon, label }) => (
           <button
