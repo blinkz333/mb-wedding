@@ -28,6 +28,7 @@ const MAPS_DIRECTION = "https://maps.app.goo.gl/TH6jPpHhj3kuEHXW6";
 const MAPS_EMBED =
   "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.5039!2d100.5658761!3d13.8821799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e283203f6584e9%3A0x739ac935a9dba39c!2sNT%20Grand%20Ballroom!5e0!3m2!1sth!2sth!4v1749553040000!5m2!1sth!2sth";
 const HASHTAG = "#BMWeddingday";
+const GAME_URL = "https://runtomylove.vercel.app/";
 const DRESS_CODE = ["#7A1228", "#C4907A", "#8B7355"];
 const SCHEDULE = [
   { time: "13.29 น.", event: "พิธีแห่ขันหมาก" },
@@ -721,6 +722,11 @@ const IconCamera = () => (
     <path d="M9 3 7.17 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.17L15 3zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
   </svg>
 );
+const IconPlay = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+    <path d="M8 5v14l11-7z" />
+  </svg>
+);
 
 // ─── Main App ────────────────────────────────────────────────
 export default function App() {
@@ -744,7 +750,7 @@ export default function App() {
 
   // Active-section tracker
   useEffect(() => {
-    const ids = ["hero", "invitation", "schedule", "gallery", "location"];
+    const ids = ["hero", "invitation", "schedule", "gallery", "game", "location"];
     const observers = ids.map((id) => {
       const el = document.getElementById(id);
       if (!el) return null;
@@ -1039,6 +1045,26 @@ export default function App() {
           <img src={lightbox} alt="" onClick={(e) => e.stopPropagation()} />
         </div>
       )}
+
+      {/* ══════════ GAME ══════════ */}
+      <section id="game" className="game-cta">
+        <div className="game-cta-card reveal">
+          <p className="game-cta-sub">A little surprise</p>
+          <h2 className="game-cta-title">Play Our Game</h2>
+          <p className="game-cta-desc">
+            ก่อนถึงวันงาน ชวนมาเล่นเกมเล็ก ๆ ที่เราทำขึ้นมาด้วยกันก่อนนะ
+          </p>
+          <a
+            href={GAME_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="game-cta-btn"
+          >
+            <IconPlay />
+            Play Our Game
+          </a>
+        </div>
+      </section>
 
       {/* ══════════ LOCATION ══════════ */}
       <section id="location" className="location">
