@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import Lightbox from "./Lightbox.jsx";
+import AlbumPage from "./AlbumPage.jsx";
+import AfterHome from "./AfterHome.jsx";
+import MusicPlayer from "./MusicPlayer.jsx";
+import { LOCAL_ALBUM } from "./albumData.js";
 import coupleImg from "./assets/imgs/couple-circle.webp";
 import scheduleImg from "./assets/imgs/schedule.jpg";
 
@@ -15,6 +20,8 @@ const GALLERY_IMAGES = Object.keys(galleryModules)
 const GALLERY = GALLERY_IMAGES.length
   ? GALLERY_IMAGES
   : [coupleImg, scheduleImg, coupleImg, scheduleImg];
+
+const ALBUM_PREVIEW = LOCAL_ALBUM.slice(0, 5);
 
 // ─── Wedding Configuration ──────────────────────────────────
 const WEDDING_DATE = new Date("2026-11-14T13:29:00");
@@ -722,6 +729,11 @@ const IconCamera = () => (
     <path d="M9 3 7.17 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.17L15 3zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
   </svg>
 );
+const IconAlbum = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+    <path d="M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z" />
+  </svg>
+);
 const IconPlay = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
     <path d="M8 5v14l11-7z" />
@@ -729,28 +741,17 @@ const IconPlay = () => (
 );
 
 // ─── Main App ────────────────────────────────────────────────
-export default function App() {
+function InviteHome() {
   const time = useCountdown(WEDDING_DATE);
   const [activeSection, setActiveSection] = useState("hero");
   const [prevTime, setPrevTime] = useState(time);
   const [flipped, setFlipped] = useState({});
+  // lightbox = { items: string[], index: number } | null
   const [lightbox, setLightbox] = useState(null);
-
-  // Close lightbox on Escape
-  useEffect(() => {
-    if (lightbox === null) return;
-    const onKey = (e) => e.key === "Escape" && setLightbox(null);
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [lightbox]);
 
   // Active-section tracker
   useEffect(() => {
-    const ids = ["hero", "invitation", "schedule", "gallery", "game", "location"];
+    const ids = ["hero", "invitation", "schedule", "gallery", "album", "game", "location"];
     const observers = ids.map((id) => {
       const el = document.getElementById(id);
       if (!el) return null;
@@ -1016,7 +1017,7 @@ export default function App() {
                   key={i}
                   type="button"
                   className="gm-item"
-                  onClick={() => setLightbox(src)}
+                  onClick={() => setLightbox({ items: [src], index: 0 })}
                   aria-label="ดูรูปขนาดเต็ม"
                 >
                   <img src={src} alt="" loading="lazy" />
@@ -1027,23 +1028,33 @@ export default function App() {
         </div>
       </section>
 
-      {lightbox && (
-        <div
-          className="gm-lightbox"
-          onClick={() => setLightbox(null)}
-          role="dialog"
-          aria-modal="true"
-        >
-          <button
-            type="button"
-            className="gm-lightbox-close"
-            aria-label="ปิด"
-            onClick={() => setLightbox(null)}
-          >
-            ×
-          </button>
-          <img src={lightbox} alt="" onClick={(e) => e.stopPropagation()} />
+      {/* ══════════ ALBUM – teaser (full album lives at #/album) ══════════ */}
+      <section id="album" className="album">
+        <h2 className="sec-title reveal">ALBUM</h2>
+        <p className="gallery-sub reveal">Wedding Day</p>
+
+        <div className="album-grid album-grid--preview reveal">
+          {ALBUM_PREVIEW.map((p, i) => (
+            <a key={i} href="#/album" className="album-item" aria-label="เปิดอัลบั้ม">
+              <img src={p.thumb} alt="" loading="lazy" decoding="async" />
+            </a>
+          ))}
         </div>
+
+        <div className="album-actions reveal">
+          <a href="#/album" className="cal-btn album-cta">
+            VIEW ALL PHOTOS
+          </a>
+        </div>
+      </section>
+
+      {lightbox && (
+        <Lightbox
+          items={lightbox.items}
+          index={lightbox.index}
+          onChange={(i) => setLightbox((lb) => ({ ...lb, index: i }))}
+          onClose={() => setLightbox(null)}
+        />
       )}
 
       {/* ══════════ GAME ══════════ */}
@@ -1114,12 +1125,15 @@ export default function App() {
           { id: "hero", Icon: IconHome, label: "Home" },
           { id: "schedule", Icon: IconCalendar, label: "Program" },
           { id: "gallery", Icon: IconCamera, label: "Gallery" },
+          { id: "album", Icon: IconAlbum, label: "Album" },
           { id: "location", Icon: IconLocation, label: "Location" },
         ].map(({ id, Icon, label }) => (
           <button
             key={id}
             className={`bnav-btn ${activeSection === id || (id === "invitation" && activeSection === "invitation") ? "bnav-active" : ""}`}
-            onClick={() => scrollTo(id)}
+            onClick={() =>
+              id === "album" ? (window.location.hash = "#/album") : scrollTo(id)
+            }
             type="button"
           >
             <Icon />
@@ -1128,5 +1142,52 @@ export default function App() {
         ))}
       </nav>
     </div>
+  );
+}
+
+// ─── Tiny hash router ───────────────────────────────────────
+//   #/album  → full photo album
+//   #/invite → original invitation page (kept for later reuse)
+//   else     → post-wedding home
+function useRoute() {
+  const get = () => {
+    const h = window.location.hash;
+    if (h.startsWith("#/album")) return "album";
+    if (h.startsWith("#/invite")) return "invite";
+    return "home";
+  };
+  const [route, setRoute] = useState(get);
+  useEffect(() => {
+    const on = () => setRoute(get());
+    window.addEventListener("hashchange", on);
+    return () => window.removeEventListener("hashchange", on);
+  }, []);
+  return route;
+}
+
+export default function App() {
+  const route = useRoute();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [route]);
+  return (
+    <>
+      <MusicPlayer />
+      {route === "album" ? (
+        <AlbumPage />
+      ) : route === "invite" ? (
+        <InviteHome />
+      ) : (
+        <AfterHome
+          brideEn={BRIDE_EN}
+          groomEn={GROOM_EN}
+          dateText="14 NOVEMBER 2026"
+          venue={VENUE_NAME}
+          hashtag={HASHTAG}
+          slides={[coupleImg, ...GALLERY_IMAGES]}
+          gameUrl={GAME_URL}
+        />
+      )}
+    </>
   );
 }

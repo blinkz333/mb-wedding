@@ -640,6 +640,240 @@ body {
 }
 
 /* -------------------------------------------------------
+   ALBUM SECTION  (5-per-row grid + lightbox nav)
+------------------------------------------------------- */
+.album {
+  background: var(--cream-light);
+  padding: 4rem 1rem 5rem;
+  text-align: center;
+  border-top: 1px solid rgba(160,148,136,0.15);
+}
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* phones: 3 so photos stay tappable */
+  gap: clamp(4px, 1vw, 10px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+@media (min-width: 600px) {
+  .album-grid { grid-template-columns: repeat(5, 1fr); }
+}
+.album-item {
+  aspect-ratio: 1;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: var(--cream);
+}
+.album-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease, filter 0.3s ease;
+}
+.album-item:hover img,
+.album-item:focus-visible img { transform: scale(1.08); filter: brightness(1.05); }
+.album-item:focus-visible { outline: 2px solid var(--burgundy); outline-offset: 2px; }
+/* -- Post-wedding home -------------------------------- */
+.after { padding-bottom: 0; }
+.after-hero {
+  background: var(--cream-light);
+  text-align: center;
+  padding: 4rem 1.5rem 4.5rem;
+}
+.after-kicker {
+  font-family: var(--font-sans);
+  font-size: clamp(0.62rem, 1.7vw, 0.78rem);
+  letter-spacing: 0.26em;
+  color: var(--burgundy);
+  margin-bottom: 2rem;
+}
+.after-photo {
+  position: relative;
+  width: clamp(200px, 52vw, 300px);
+  aspect-ratio: 1;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 14px 36px rgba(122,18,40,0.18);
+}
+/* every slide sits on top of the others; only the active one is visible */
+.after-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%; /* keep faces in frame */
+  /* entering: soft, slightly blurred and zoomed in */
+  opacity: 0;
+  transform: scale(1.18);
+  filter: blur(6px);
+  transition:
+    opacity 1.2s ease,
+    transform 6s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.2s ease;
+}
+/* active: fades in, then slowly settles (Ken Burns style) */
+.after-photo img.is-active {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+  z-index: 1;
+}
+/* soft golden ring that gently pulses around the circle */
+.after-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgba(201,164,112,0.55);
+  z-index: 2;
+  pointer-events: none;
+}
+.after-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 0 auto 1.4rem;
+}
+.after-dots button {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(160,148,136,0.45);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.after-dots button.is-active { background: var(--burgundy); transform: scale(1.4); }
+/* reduced motion: keep the plain cross-fade, drop the zoom and blur */
+@media (prefers-reduced-motion: reduce) {
+  .after-photo img,
+  .after-photo img.is-active { transform: none; filter: none; transition: opacity 1.2s ease; }
+}
+.after-names { display: flex; flex-direction: column; align-items: center; }
+.after-names .script-name { font-size: clamp(2.8rem, 10vw, 5rem); }
+.after-date {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  margin-top: 1rem;
+  color: var(--text-dark);
+}
+.after-venue {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  margin: 0.4rem 0 2rem;
+}
+.after-thanks {
+  font-family: var(--font-thai);
+  font-size: clamp(0.88rem, 2.4vw, 1rem);
+  line-height: 1.9;
+  color: var(--text-mid);
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+}
+.after-hashtag {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  background: var(--burgundy);
+  padding: 0.5rem 1.4rem;
+  border-radius: 4px;
+}
+.after-album { background: var(--white); }
+.after-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2.5rem 1rem 3rem;
+  background: var(--cream-light);
+}
+.after-link {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  color: var(--text-dark);
+  text-decoration: none;
+  border: 1px solid var(--text-dark);
+  border-radius: 30px;
+  padding: 0.8rem 2rem;
+}
+.after-link:hover { background: var(--text-dark); color: var(--white); }
+
+a.album-item { display: block; }
+.album-grid--preview { max-width: 900px; }
+.album-cta { text-decoration: none; display: inline-block; }
+.album-sentinel { height: 1px; }
+.album--page { border-top: none; min-height: 100svh; padding-top: 2rem; }
+.album-page-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--burgundy);
+  color: #F5EDD8;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+}
+.album-back { color: inherit; text-decoration: none; }
+.album-back:hover { text-decoration: underline; }
+.album-page .sec-title { margin-bottom: 1rem; }
+.album-page .gallery-sub { margin-top: 0; }
+.album-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.gm-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1;
+}
+.gm-lightbox-nav:hover { background: rgba(255,255,255,0.28); }
+.gm-lightbox-prev { left: 0.75rem; }
+.gm-lightbox-next { right: 0.75rem; }
+.gm-lightbox-count {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.8);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+}
+
+/* -------------------------------------------------------
    GAME CTA SECTION
 ------------------------------------------------------- */
 .game-cta {
@@ -1087,4 +1321,152 @@ body {
   .bp-header  { padding: 1rem 1.25rem; }
   .compass-rose { width: 42px; height: 42px; }
   .person-th { white-space: normal; }
+}
+
+.gm-lightbox-orig {
+  position: absolute;
+  top: 3.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 1;
+  color: #2C2828;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-decoration: none;
+  border: none;
+  border-radius: 30px;
+  padding: 0.75rem 1.5rem;
+  background: var(--gold-light);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+  overflow: hidden;
+  /* slides down + fades in shortly after the photo opens */
+  animation: gmBtnIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+  transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+/* light sweep across the button on hover */
+.gm-lightbox-orig::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.7), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+.gm-lightbox-orig:hover,
+.gm-lightbox-orig:focus-visible {
+  background: #fff;
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 8px 24px rgba(201,164,112,0.55);
+  outline: none;
+}
+.gm-lightbox-orig:hover::after,
+.gm-lightbox-orig:focus-visible::after {
+  left: 130%;
+  transition: left 0.7s ease;
+}
+.gm-lightbox-orig:active {
+  transform: translateX(-50%) translateY(0) scale(0.96);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.gm-dl-arrow { display: inline-block; }
+.gm-lightbox-orig:hover .gm-dl-arrow,
+.gm-lightbox-orig:focus-visible .gm-dl-arrow {
+  animation: gmArrowBounce 0.8s ease-in-out infinite;
+}
+@keyframes gmBtnIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-14px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes gmArrowBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(3px); }
+}
+
+/* other lightbox controls: smooth hover / press */
+.gm-lightbox-close,
+.gm-lightbox-nav {
+  transition: background 0.25s, transform 0.25s;
+}
+.gm-lightbox-close:hover { background: rgba(255,255,255,0.28); transform: rotate(90deg); }
+.gm-lightbox-nav:hover { transform: translateY(-50%) scale(1.1); }
+.gm-lightbox-nav:active { transform: translateY(-50%) scale(0.94); }
+
+/* smoother photo swap + fade-out friendly image */
+.gm-lightbox img {
+  transition: opacity 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gm-lightbox-orig,
+  .gm-dl-arrow { animation: none !important; }
+  .gm-lightbox-orig::after { display: none; }
+}
+
+/* -------------------------------------------------------
+   MUSIC TOGGLE (floating)
+------------------------------------------------------- */
+.music-btn {
+  position: fixed;
+  right: 1rem;
+  bottom: 5rem; /* clears the mobile bottom nav */
+  z-index: 150;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: var(--burgundy);
+  color: #F5EDD8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(122,18,40,0.4);
+  transition: transform 0.25s, background 0.25s, box-shadow 0.25s;
+}
+.music-btn:hover,
+.music-btn:focus-visible {
+  background: var(--burgundy-dark);
+  transform: scale(1.08);
+  outline: none;
+}
+.music-btn.is-playing { animation: musicPulse 2.4s ease-in-out infinite; }
+.music-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+}
+.music-bars i {
+  display: block;
+  width: 3px;
+  height: 4px;          /* paused: flat bars */
+  border-radius: 2px;
+  background: currentColor;
+  transition: height 0.3s;
+}
+.music-btn.is-playing .music-bars i { animation: musicBar 0.9s ease-in-out infinite; }
+.music-btn.is-playing .music-bars i:nth-child(2) { animation-delay: 0.2s; }
+.music-btn.is-playing .music-bars i:nth-child(3) { animation-delay: 0.4s; }
+.music-btn.is-playing .music-bars i:nth-child(4) { animation-delay: 0.1s; }
+@keyframes musicBar {
+  0%, 100% { height: 4px; }
+  50%      { height: 18px; }
+}
+@keyframes musicPulse {
+  0%, 100% { box-shadow: 0 6px 18px rgba(122,18,40,0.4), 0 0 0 0 rgba(201,164,112,0.5); }
+  50%      { box-shadow: 0 6px 18px rgba(122,18,40,0.4), 0 0 0 10px rgba(201,164,112,0); }
+}
+@media (min-width: 1024px) {
+  .music-btn { bottom: 1.5rem; right: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .music-btn.is-playing,
+  .music-btn.is-playing .music-bars i { animation: none; }
+  .music-btn.is-playing .music-bars i { height: 12px; }
 }
