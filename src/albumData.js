@@ -37,25 +37,51 @@ const mockPhoto = (n) => {
   return { thumb: url, full: url };
 };
 
+// Mock photos are for local development only – never shown on the live site.
 export const LOCAL_ALBUM = BUNDLED.length
   ? BUNDLED
-  : Array.from({ length: 120 }, (_, i) => mockPhoto(i));
+  : import.meta.env.DEV
+    ? Array.from({ length: 120 }, (_, i) => mockPhoto(i))
+    : [];
 
-// Returns the album list: local/mock first, replaced by the manifest once loaded.
+// Returns { photos, error, retry }
+//   photos – null while the manifest is loading (callers show skeleton tiles)
+//   error  – true when the list could not be loaded (callers show <BusyNotice>)
+//   retry  – load the list again
 export function useAlbum() {
-  const [photos, setPhotos] = useState(LOCAL_ALBUM);
+  const [state, setState] = useState({
+    photos: ALBUM_MANIFEST_URL ? null : LOCAL_ALBUM,
+    error: false,
+  });
+  const [attempt, setAttempt] = useState(0);
+
   useEffect(() => {
     if (!ALBUM_MANIFEST_URL) return;
     let off = false;
-    fetch(ALBUM_MANIFEST_URL)
+    const fail = () => {
+      if (off) return;
+      // fall back to photos bundled in src/assets/album/, otherwise report an error
+      if (BUNDLED.length) setState({ photos: BUNDLED, error: false });
+      else setState({ photos: [], error: true });
+    };
+    // cache-bust only on retries so a stale failed response isn't reused
+    const url = attempt ? `${ALBUM_MANIFEST_URL}?r=${attempt}` : ALBUM_MANIFEST_URL;
+    fetch(url)
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((list) => {
-        if (!off && Array.isArray(list) && list.length) setPhotos(list);
+        if (off) return;
+        if (Array.isArray(list) && list.length) setState({ photos: list, error: false });
+        else fail();
       })
-      .catch(() => {});
+      .catch(fail);
     return () => {
       off = true;
     };
-  }, []);
-  return photos;
+  }, [attempt]);
+
+  const retry = () => {
+    setState({ photos: null, error: false });
+    setAttempt((a) => a + 1);
+  };
+  return { photos: state.photos, error: state.error, retry };
 }

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAlbum, ALBUM_ORIGINALS_URL } from "./albumData.js";
+import SkeletonImg from "./SkeletonImg.jsx";
+import BusyNotice from "./BusyNotice.jsx";
 
 // Post-wedding landing page. The original invitation page lives at #/invite.
 export default function AfterHome({
@@ -11,7 +13,8 @@ export default function AfterHome({
   slides,
   gameUrl,
 }) {
-  const PREVIEW = useAlbum().slice(0, 10);
+  const { photos: album, error: albumError, retry: retryAlbum } = useAlbum();
+  const PREVIEW = (album || []).slice(0, 10);
 
   // Pre-wedding slideshow in the hero circle
   const [slide, setSlide] = useState(0);
@@ -87,10 +90,15 @@ export default function AfterHome({
       <section className="album after-album">
         <h2 className="sec-title is-visible reveal">ALBUM</h2>
         <p className="gallery-sub is-visible reveal">Wedding Day</p>
+        {albumError && <BusyNotice onRetry={retryAlbum} />}
         <div className="album-grid album-grid--preview">
+          {album === null &&
+            Array.from({ length: 10 }, (_, i) => (
+              <div key={i} className="album-item skeleton" aria-hidden="true" />
+            ))}
           {PREVIEW.map((p, i) => (
-            <a key={i} href="#/album" className="album-item" aria-label="เปิดอัลบั้ม" data-start-music>
-              <img src={p.thumb} alt="" loading="lazy" decoding="async" />
+            <a key={i} href="#/album" className="album-item skeleton" aria-label="เปิดอัลบั้ม" data-start-music>
+              <SkeletonImg src={p.thumb} alt="" loading="lazy" decoding="async" />
             </a>
           ))}
         </div>

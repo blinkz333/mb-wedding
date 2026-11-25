@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import Lightbox from "./Lightbox.jsx";
+import SkeletonImg from "./SkeletonImg.jsx";
+import BusyNotice from "./BusyNotice.jsx";
 import { useAlbum, ALBUM_ORIGINALS_URL } from "./albumData.js";
 
 const BATCH = 60; // photos rendered per scroll step (keeps 1000+ photos smooth)
 
 export default function AlbumPage() {
-  const photos = useAlbum();
+  const { photos: list, error, retry } = useAlbum();
+  const loading = list === null;
+  const photos = list || [];
   const [shown, setShown] = useState(BATCH);
   const [open, setOpen] = useState(null); // index | null
   const sentinel = useRef(null);
@@ -34,23 +38,29 @@ export default function AlbumPage() {
         <a href="#/" className="album-back">
           ← BACK
         </a>
-        <span className="album-page-count">{total} PHOTOS</span>
+        <span className="album-page-count">{loading ? "" : `${total} PHOTOS`}</span>
       </header>
 
       <section className="album album--page">
         <h1 className="sec-title is-visible reveal">ALBUM</h1>
         <p className="gallery-sub is-visible reveal">Wedding Day</p>
 
+        {error && <BusyNotice onRetry={retry} />}
+
         <div className="album-grid">
+          {loading &&
+            Array.from({ length: 30 }, (_, i) => (
+              <div key={i} className="album-item skeleton" aria-hidden="true" />
+            ))}
           {photos.slice(0, shown).map((p, i) => (
             <button
               key={i}
               type="button"
-              className="album-item"
+              className="album-item skeleton"
               onClick={() => setOpen(i)}
               aria-label={`ดูรูปที่ ${i + 1} ขนาดเต็ม`}
             >
-              <img src={p.thumb} alt="" loading="lazy" decoding="async" />
+              <SkeletonImg src={p.thumb} alt="" loading="lazy" decoding="async" />
             </button>
           ))}
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import BusyNotice from "./BusyNotice.jsx";
 
 // items: string[] | { full }[]   index: number   onChange(i) / onClose()
 export default function Lightbox({ items, index, onChange, onClose }) {
@@ -32,6 +33,20 @@ export default function Lightbox({ items, index, onChange, onClose }) {
   const [fail, setFail] = useState({ key: null, n: 0 });
   const tried = fail.key === full ? fail.n : 0;
   const src = sources[Math.min(tried, sources.length - 1)];
+
+  // Which src has finished loading (drives the skeleton → photo fade)
+  const [loadedSrc, setLoadedSrc] = useState(null);
+  const ready = loadedSrc === src;
+
+  // All sources (even the thumb) failed → show the "busy" notice with a retry button
+  const [dead, setDead] = useState(null);
+  const [nonce, setNonce] = useState(0);
+  const failedAll = dead === src;
+  const retryPhoto = () => {
+    setDead(null);
+    setFail({ key: null, n: 0 });
+    setNonce((n) => n + 1);
+  };
 
   return (
     <div
@@ -77,14 +92,26 @@ export default function Lightbox({ items, index, onChange, onClose }) {
           </span>
         </>
       )}
+      {/* shimmer placeholder while the photo loads */}
+      {!ready && !failedAll && (
+        <div className="gm-lb-skel skeleton" aria-hidden="true" />
+      )}
+      {failedAll && <BusyNotice dark onRetry={retryPhoto} />}
       <img
-        key={src}
+        key={`${src}-${nonce}`}
         src={src}
         alt=""
+        className={`gm-lb-img${ready ? " is-ready" : ""}`}
+        ref={(el) => {
+          if (el && !ready && el.complete && el.naturalWidth) setLoadedSrc(src);
+        }}
+        onLoad={() => setLoadedSrc(src)}
         onClick={(e) => e.stopPropagation()}
         referrerPolicy="no-referrer"
         onError={() =>
-          tried < sources.length - 1 && setFail({ key: full, n: tried + 1 })
+          tried < sources.length - 1
+            ? setFail({ key: full, n: tried + 1 })
+            : setDead(src)
         }
       />
       {download && (
