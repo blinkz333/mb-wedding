@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAlbum, ALBUM_ORIGINALS_URL } from "./albumData.js";
-import SkeletonImg from "./SkeletonImg.jsx";
+import ShuffleGrid from "./ShuffleGrid.jsx";
 import BusyNotice from "./BusyNotice.jsx";
 
 // Post-wedding landing page. The original invitation page lives at #/invite.
@@ -14,7 +14,6 @@ export default function AfterHome({
   gameUrl,
 }) {
   const { photos: album, error: albumError, retry: retryAlbum } = useAlbum();
-  const PREVIEW = (album || []).slice(0, 10);
 
   // Pre-wedding slideshow in the hero circle
   const [slide, setSlide] = useState(0);
@@ -96,11 +95,7 @@ export default function AfterHome({
             Array.from({ length: 10 }, (_, i) => (
               <div key={i} className="album-item skeleton" aria-hidden="true" />
             ))}
-          {PREVIEW.map((p, i) => (
-            <a key={i} href="#/album" className="album-item skeleton" aria-label="เปิดอัลบั้ม" data-start-music>
-              <SkeletonImg src={p.thumb} alt="" loading="lazy" decoding="async" />
-            </a>
-          ))}
+          {album && album.length > 0 && <ShuffleGrid photos={album} count={10} />}
         </div>
         <div className="album-actions">
           <a href="#/album" className="cal-btn album-cta" data-start-music>

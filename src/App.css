@@ -1585,3 +1585,43 @@ button.album-item.skeleton, a.album-item.skeleton { cursor: zoom-in; }
   to   { opacity: 1; transform: translateY(0); }
 }
 .busy-notice--dark { animation: none; }
+
+/* -------------------------------------------------------
+   SHUFFLING PREVIEW TILES (home) – a new photo swaps in over the old one
+------------------------------------------------------- */
+.album-item { position: relative; }
+.album-item .tile-in {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 1;
+  animation-duration: 1.1s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+.tile-fx-0 { animation-name: tileFade; }   /* fade + zoom out */
+.tile-fx-1 { animation-name: tileSlide; }  /* slides up from below */
+.tile-fx-2 { animation-name: tileFlip; }   /* turns in like a card */
+@keyframes tileFade {
+  from { opacity: 0; transform: scale(1.25); filter: blur(6px); }
+  to   { opacity: 1; transform: scale(1);    filter: blur(0); }
+}
+@keyframes tileSlide {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes tileFlip {
+  from { opacity: 0; transform: perspective(500px) rotateY(-80deg) scale(0.9); }
+  to   { opacity: 1; transform: perspective(500px) rotateY(0) scale(1); }
+}
+/* 10 tiles don't fill 3-column rows on phones – hide the last one there */
+@media (max-width: 599px) {
+  .album-grid--preview > :nth-child(10) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile-fx-1, .tile-fx-2 { animation-name: tileFadeSimple; }
+  @keyframes tileFadeSimple { from { opacity: 0; } to { opacity: 1; } }
+}
